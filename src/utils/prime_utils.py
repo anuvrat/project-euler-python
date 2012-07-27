@@ -26,7 +26,8 @@ def is_probable_prime(n, trials = 5):
     A return value of False means n is certainly not prime. A return value of
     True means n is very likely a prime.
     """
-    assert n >= 2
+    #assert n >= 2
+    if n < 2: return False
     # special case 2
     if n == 2:
         return True
@@ -60,4 +61,3 @@ def is_probable_prime(n, trials = 5):
             return False
 
     return True # no base tested showed n as composite
-

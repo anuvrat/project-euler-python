@@ -5,16 +5,13 @@ Created on Jun 30, 2012
 '''
 from utils.prime_utils import is_probable_prime
 
-squares = [2 * x * x for x in range(1, 1000000)]
+squares = [2 * x * x for x in range( 1, 1000000 )]
 
-def can_be_written(odd_composite):
+def can_be_written( odd_composite ):
     for square in squares:
-        diff = odd_composite - square
-        if diff < 0: break
-        if is_probable_prime(diff): return True
-    return False
+        if is_probable_prime( odd_composite - square ): return True
 
-for odd_composite in xrange(9, 10 ** 9, 2):
-    if not is_probable_prime(odd_composite) and not can_be_written(odd_composite): break
+for odd_composite in xrange( 9, 10 ** 9, 2 ):
+    if not is_probable_prime( odd_composite ) and not can_be_written( odd_composite ): break
 
 print odd_composite
