@@ -7,6 +7,7 @@ import numpy
 import random
 from utils.number_utils import gcd
 from collections import Counter
+from utils.memoize import Memoize
 
 def primesfrom2to( n ):
     """
@@ -14,13 +15,18 @@ def primesfrom2to( n ):
         http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
     """
     sieve = numpy.ones( n / 3 + ( n % 6 == 2 ), dtype = numpy.bool )
-    for i in xrange( 1, int( n ** 0.5 ) / 3 + 1 ):
+    for i in range( 1, int( ( n ** 0.5 ) / 3 ) + 1 ):
         if sieve[i]:
             k = 3 * i + 1 | 1
             sieve[       k * k / 3     ::2 * k] = False
             sieve[k * ( k - 2 * ( i & 1 ) + 4 ) / 3::2 * k] = False
     return numpy.r_[2, 3, ( ( 3 * numpy.nonzero( sieve )[0][1:] + 1 ) | 1 )]
 
+smallprimesetlimit = 50000000
+smallprimeset = set( primesfrom2to( smallprimesetlimit ) )
+smallprimes = ( 2, ) + tuple( n for n in range( 3, 10000, 2 ) if n in smallprimeset )
+
+@Memoize
 def is_probable_prime( n, trials = 5 ):
     """
     Miller-Rabin primality test.
@@ -28,6 +34,9 @@ def is_probable_prime( n, trials = 5 ):
     A return value of False means n is certainly not prime. A return value of
     True means n is very likely a prime.
     """
+
+    if n in smallprimeset: return True
+
     if n < 2: return False
     # special case 2
     if n == 2:
@@ -45,7 +54,7 @@ def is_probable_prime( n, trials = 5 ):
             break
         s += 1
         d = quotient
-    assert( 2 ** s * d == n - 1 )
+    assert( ( 2 ** s ) * d == n - 1 )
 
     # test the base a to see whether it is a witness for the compositeness of n
     def try_composite( a ):
@@ -63,10 +72,8 @@ def is_probable_prime( n, trials = 5 ):
 
     return True # no base tested showed n as composite
 
-smallprimeset = set( primesfrom2to( 100000 ) )
-smallprimes = ( 2, ) + tuple( n for n in xrange( 3, 1000, 2 ) if n in smallprimeset )
-
 # https://comeoncodeon.wordpress.com/2010/09/18/pollard-rho-brent-integer-factorization/
+@Memoize
 def pollard_brent( n ):
     if n % 2 == 0: return 2
     if n % 3 == 0: return 3
@@ -96,6 +103,7 @@ def pollard_brent( n ):
 
     return g
 
+@Memoize
 def primefactors( n, sort = False ):
     factors = []
 
@@ -113,6 +121,7 @@ def primefactors( n, sort = False ):
         factors.extend( bigfactors( n, sort ) )
         return factors
 
+@Memoize
 def bigfactors( n, sort = False ):
     factors = []
     while n > 1:
@@ -126,16 +135,13 @@ def bigfactors( n, sort = False ):
     if sort: factors.sort()
     return factors
 
-totients = {}
+@Memoize
 def totient( n ):
     if n == 0: return 1
-
-    try: return totients[n]
-    except KeyError: pass
+    if is_probable_prime( n ): return n - 1
 
     tot = 1
     for p, exp in Counter( primefactors( n ) ).items():
         tot *= ( p - 1 ) * p ** ( exp - 1 )
 
-    totients[n] = tot
     return tot
