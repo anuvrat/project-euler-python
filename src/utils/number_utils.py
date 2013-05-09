@@ -4,6 +4,7 @@ Created on Jun 30, 2012
 @author: anuvrat
 '''
 import itertools, operator
+from memoize import Memoize
 
 def gcd( a, b ):
     if a == b: return a
@@ -56,3 +57,17 @@ def factor( n ):
         r += f
     if n > 1: r += [i * n for i in r]
     return r
+
+@Memoize
+def isPandigital( n ):
+    digits, count = 0, 0
+
+    while n > 0:
+        tmp = digits
+        digits |= 1 << ( int )( ( n % 10 ) - 1 )
+        if tmp == digits: return False
+
+        count += 1
+        n /= 10
+
+    return digits == ( 1 << count ) - 1
