@@ -22,9 +22,9 @@ def primesfrom2to( n ):
             sieve[k * ( k - 2 * ( i & 1 ) + 4 ) / 3::2 * k] = False
     return numpy.r_[2, 3, ( ( 3 * numpy.nonzero( sieve )[0][1:] + 1 ) | 1 )]
 
-smallprimesetlimit = 50000000
+smallprimesetlimit = 500000
 smallprimeset = set( primesfrom2to( smallprimesetlimit ) )
-smallprimes = ( 2, ) + tuple( n for n in range( 3, 10000, 2 ) if n in smallprimeset )
+smallprimes = ( 2, ) + tuple( n for n in range( 3, 1000, 2 ) if n in smallprimeset )
 
 @Memoize
 def is_probable_prime( n, trials = 5 ):
