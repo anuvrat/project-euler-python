@@ -5,6 +5,7 @@ Created on Jun 30, 2012
 '''
 import itertools, operator
 from memoize import Memoize
+import math
 
 def gcd( a, b ):
     if a == b: return a
@@ -58,13 +59,29 @@ def factor( n ):
     if n > 1: r += [i * n for i in r]
     return r
 
+def numberOfDigits( n ):
+    return math.floor( math.log10( n ) + 1 )
+
+@Memoize
+def firstDigitsOfFib( n, d ):
+    """
+        For the fibonacci number Fib(n), return the first d digits
+    """
+    # temp = log( (phi ^ n) / sqrt(5) )
+    # => temp = n * log(phi) - log(sqrt(5))
+    temp = n * 0.20898764024997873 - 0.3494850021680094
+    return int( pow( 10, temp - int( temp ) + d - 1 ) )
+
 @Memoize
 def isPandigital( n ):
     digits, count = 0, 0
 
     while n > 0:
+        lastDigit = n % 10
+        if not lastDigit: return False
+
         tmp = digits
-        digits |= 1 << ( int )( ( n % 10 ) - 1 )
+        digits |= 1 << ( int )( ( lastDigit ) - 1 )
         if tmp == digits: return False
 
         count += 1
