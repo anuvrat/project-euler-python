@@ -6,6 +6,7 @@ Created on Jun 30, 2012
 import itertools, operator
 from memoize import Memoize
 import math
+from collections import deque
 
 def gcd( a, b ):
     if a == b: return a
@@ -88,3 +89,18 @@ def isPandigital( n ):
         n /= 10
 
     return digits == ( 1 << count ) - 1
+
+def coprimes():
+    coprime_queue = deque( [( 2, 1 )] )
+    while True:
+        coprime = coprime_queue.popleft()
+        coprime_queue.append( ( 2 * coprime[0] - coprime[1], coprime[0] ) )
+        coprime_queue.append( ( 2 * coprime[0] + coprime[1], coprime[0] ) )
+        coprime_queue.append( ( coprime[0] + 2 * coprime[1], coprime[1] ) )
+        yield coprime
+
+def primitive_pythagorean_triples():
+    for coprime in coprimes():
+        if coprime[0] <= coprime[1] or ( ( coprime[0] - coprime[1] ) % 2 == 0 ): continue
+        m2, mn, n2 = coprime[0] ** 2, coprime[0] * coprime[1], coprime[1] ** 2
+        yield sorted( ( m2 - n2, 2 * mn, m2 + n2 ) )
