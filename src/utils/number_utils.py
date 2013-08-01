@@ -4,9 +4,9 @@ Created on Jun 30, 2012
 @author: anuvrat
 '''
 import itertools, operator
-from memoize import Memoize
 import math
 from collections import deque
+from utils.memoize import Memoize
 
 def gcd( a, b ):
     if a == b: return a
@@ -89,6 +89,19 @@ def isPandigital( n ):
         n /= 10
 
     return digits == ( 1 << count ) - 1
+
+@Memoize
+def getPentagonal( idx ):
+    return int( ( idx * ( 3 * idx - 1 ) ) / 2 );
+
+@Memoize
+def isPentagonal( n ):
+    # Necessary condition:
+    #     (1 + 24n) is a perfect square
+    # Required:
+    #     sqrt(1 + 24n) = 5 mod 6
+    root = math.sqrt( 1 + 24 * n )
+    return True if root == math.trunc( root ) and root % 6 == 5 else False
 
 def coprimes():
     coprime_queue = deque( [( 2, 1 )] )
