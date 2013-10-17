@@ -16,6 +16,7 @@ def getFactorialOfDigits( num ):
     return sum ( getFactorial( digit ) for digit in getDigitsIn( num ) )
 
 def getChainFor( num, chain, chainLengths ):
+    if len( chain ) > 60: return None, None
     if chainLengths[num] > 0: return chain, chainLengths[num] - 1
     val = getFactorialOfDigits( num )
     if val in chain: return chain, 0
@@ -31,10 +32,10 @@ def updateChainLengths(chain, chainLengths, length):
     return chainLengths
 
 if __name__ == '__main__':
-    print( getFactorialOfDigits( 169 ) )
     chainLengths = [0] * 3000000
     for i in range(1000000):
         ( chain, subLength ) = ( [], chainLengths[i] ) if chainLengths[i] > 0 else getChainFor( i, [i], chainLengths )
+        if chain == None: continue
         chainLengths = updateChainLengths( chain, chainLengths, len( chain ) + subLength )
 
     print ( sum( n == 60 for n in chainLengths ) )
