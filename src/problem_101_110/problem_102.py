@@ -28,6 +28,6 @@ with open(filename) as f:
         
         area_triangle = area_of_triangle(p[0], p[1], p[2])
         
-        if area[0] + area[1] + area[2] == area_triangle: interior_origin_triangles += 1
+        if sum(area) == area_triangle: interior_origin_triangles += 1
 
 print(interior_origin_triangles)

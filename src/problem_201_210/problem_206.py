@@ -1,9 +1,3 @@
-'''
-Created on Dec 14, 2013
-
-@author: anuvrat
-'''
-
 # We need to search for answer in the range 1010101010 - 1389026623
 # But we know that our answer must end in 30 or 70. So we can reduce the search space to 10101010 - 13890266 and append 30, 70
 
